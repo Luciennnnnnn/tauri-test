@@ -26,7 +26,7 @@ jobs:
         uses: dante-signal31/rust-app-version@v1.0.0
         id: get_version
         with:
-          cargo_toml_folder: ${{ github.workspace }}/src-tauri
+          cargo_toml_folder: src-tauri
   
       - name: Prepare folders on update server
         if: runner.os == 'Linux'
@@ -85,12 +85,12 @@ jobs:
         if: runner.os == 'Linux'
         uses: easingthemes/ssh-deploy@main
         with:
-          SOURCE: 'target/release/bundle/appimage/'
-          TARGET: '~/releases/tauri-test/src-tauri/${{ steps.get_version.outputs.app_version }}/linux/'
+          SOURCE: 'src-tauri/target/release/bundle/appimage/'
+          TARGET: '~/releases/tauri-test/${{ steps.get_version.outputs.app_version }}/linux/'
 
       - name: Upload files to the update server (macOS)
         if: runner.os == 'macOS'
         uses: easingthemes/ssh-deploy@main
         with:
-          SOURCE: 'target/release/bundle/macos/'
-          TARGET: '~/releases/tauri-test/src-tauri/${{ steps.get_version.outputs.app_version }}/darwin/'
+          SOURCE: 'src-tauri/target/release/bundle/macos/'
+          TARGET: '~/releases/tauri-test/${{ steps.get_version.outputs.app_version }}/darwin/'
