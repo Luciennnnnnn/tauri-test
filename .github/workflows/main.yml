@@ -78,7 +78,7 @@ jobs:
           protocol: ftps
           username: ${{ env.REMOTE_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: 'target/release/bundle/msi/'
+          local-dir: 'src-tauri/target/release/bundle/msi/'
           server-dir: 'releases/mw-toolbox/latest/win64/'
           
       - name: Upload files to the update server (Linux)
