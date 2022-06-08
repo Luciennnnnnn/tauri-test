@@ -69,7 +69,18 @@ jobs:
           releaseBody: 'See the assets to download this version and install.'
           releaseDraft: true
           prerelease: false
-
+          
+      - name: Upload files to the update server (Windows)
+        if: runner.os == 'Windows'
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: ${{ env.REMOTE_HOST }}
+          protocol: ftps
+          username: ${{ env.REMOTE_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: 'target/release/bundle/msi/'
+          server-dir: 'releases/mw-toolbox/latest/win64/'
+          
       - name: Upload files to the update server (Linux)
         if: runner.os == 'Linux'
         uses: easingthemes/ssh-deploy@main
