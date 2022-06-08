@@ -21,12 +21,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        
       - name: Read version number from Cargo.toml
-        uses: SebRollen/toml-action@v1.0.0
-        id: read_toml
+        uses: dante-signal31/rust-app-version@v1.0.0
+        id: get_version
         with:
-          file: '/Users/runner/work/micro/micro/src-tauri/Cargo.toml'
-          field: 'package.version'
+          cargo_toml_folder: /home/runner/work/tauri-test/tauri-test/scr-tauri
   
       - name: Prepare folders on update server
         if: runner.os == 'Linux'
@@ -37,7 +37,7 @@ jobs:
           key: ${{ env.SSH_PRIVATE_KEY }}
           script: |
             cd ~/releases/tauri-test
-            mkdir -p ${{ steps.read_toml.outputs.value }}/win64 ${{ steps.read_toml.outputs.value }}/linux ${{ steps.read_toml.outputs.value }}ls/darwin
+            mkdir -p ${{ steps.get_version.outputs.app_version }}/win64 ${{ steps.get_version.outputs.app_version }}/linux ${{ steps.get_version.outputs.app_version }}ls/darwin
             
       - name: Node.js setup
         uses: actions/setup-node@v1
@@ -75,11 +75,11 @@ jobs:
         uses: easingthemes/ssh-deploy@main
         with:
           SOURCE: 'target/release/bundle/appimage/'
-          TARGET: '~/releases/tauri-test/${{ steps.read_toml.outputs.value }}/linux/'
+          TARGET: '~/releases/tauri-test/${{ steps.get_version.outputs.app_version }}/linux/'
 
       - name: Upload files to the update server (macOS)
         if: runner.os == 'macOS'
         uses: easingthemes/ssh-deploy@main
         with:
           SOURCE: 'target/release/bundle/macos/'
-          TARGET: '~/releases/tauri-test/${{ steps.read_toml.outputs.value }}/darwin/'
+          TARGET: '~/releases/tauri-test/${{ steps.get_version.outputs.app_version }}/darwin/'
