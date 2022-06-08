@@ -1,0 +1,85 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+env:
+  TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+  REMOTE_HOST: ${{ secrets.SERVER_IP }}
+  REMOTE_USER: ${{ secrets.USERNAME }}
+  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+jobs:
+  release:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [macos-latest, ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Read version number from Cargo.toml
+        uses: SebRollen/toml-action@v1.0.0
+        id: read_toml
+        with:
+          file: '/Users/runner/work/micro/micro/src-tauri/Cargo.toml'
+          field: 'package.version'
+  
+      - name: Prepare folders on update server
+        if: runner.os == 'Linux'
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ env.REMOTE_HOST }}
+          username: ${{ env.REMOTE_USER }}
+          key: ${{ env.SSH_PRIVATE_KEY }}
+          script: |
+            cd ~/releases/tauri-test
+            mkdir -p ${{ steps.read_toml.outputs.value }}/win64 ${{ steps.read_toml.outputs.value }}/linux ${{ steps.read_toml.outputs.value }}ls/darwin
+            
+      - name: Node.js setup
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      - name: Rust setup
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Install dependencies (ubuntu only)
+        if: matrix.platform == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev webkit2gtk-4.0 libappindicator3-dev librsvg2-dev patchelf
+      - name: Install app dependencies and build web
+        run: yarn && yarn build
+
+      - name: Build the app
+        uses: tauri-apps/tauri-action@v0
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+        with:
+          tagName: v__VERSION__ # tauri-action replaces \_\_VERSION\_\_ with the app version
+          releaseName: 'v__VERSION__'
+          releaseBody: 'See the assets to download this version and install.'
+          releaseDraft: true
+          prerelease: false
+
+      - name: Upload files to the update server (Linux)
+        if: runner.os == 'Linux'
+        uses: easingthemes/ssh-deploy@main
+        with:
+          SOURCE: 'target/release/bundle/appimage/'
+          TARGET: '~/releases/tauri-test/${{ steps.read_toml.outputs.value }}/linux/'
+
+      - name: Upload files to the update server (macOS)
+        if: runner.os == 'macOS'
+        uses: easingthemes/ssh-deploy@main
+        with:
+          SOURCE: 'target/release/bundle/macos/'
+          TARGET: '~/releases/tauri-test/${{ steps.read_toml.outputs.value }}/darwin/'
