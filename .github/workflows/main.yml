@@ -21,15 +21,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      
-      - name: xxx
-        run: ls ${{ github.workspace }}/src-tauri
         
       - name: Read version number from Cargo.toml
         uses: dante-signal31/rust-app-version@v1.0.0
         id: get_version
         with:
-          cargo_toml_folder: ${{ github.workspace }}/tauri-test/scr-tauri
+          cargo_toml_folder: ${{ github.workspace }}/src-tauri
   
       - name: Prepare folders on update server
         if: runner.os == 'Linux'
