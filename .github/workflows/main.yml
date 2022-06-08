@@ -37,7 +37,7 @@ jobs:
           key: ${{ env.SSH_PRIVATE_KEY }}
           script: |
             cd ~/releases/tauri-test
-            mkdir -p ${{ steps.get_version.outputs.app_version }}/win64 ${{ steps.get_version.outputs.app_version }}/linux ${{ steps.get_version.outputs.app_version }}ls/darwin
+            mkdir -p ${{ steps.get_version.outputs.app_version }}/win64 ${{ steps.get_version.outputs.app_version }}/linux ${{ steps.get_version.outputs.app_version }}/darwin
             
       - name: Node.js setup
         uses: actions/setup-node@v1
