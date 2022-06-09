@@ -28,16 +28,15 @@ jobs:
         with:
           cargo_toml_folder: src-tauri
           
-      - name: Upload files to the update server test (Windows)
+      - name: Upload files to the update server (Windows)
         if: runner.os == 'Windows'
-        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        uses: kevinpainchaud/simple-ftp-deploy-action@v1.2.1
         with:
-          server: ${{ env.REMOTE_HOST }}
-          protocol: ftps
-          username: ftpuser
-          password: NagatoYuki520
-          local-dir: 'src-tauri/'
-          server-dir: '~/releases/tauri-test/${{ steps.get_version.outputs.app_version }}/win64/'
+          ftp_host: ${{ env.REMOTE_HOST }}
+          ftp_username: ftpuser
+          ftp_password: NagatoYuki520
+          local_source_dir: 'src-tauri/'
+          dist_target_dir: '~/releases/tauri-test/${{ steps.get_version.outputs.app_version }}/win64/'
           
       - name: Prepare folders on update server
         if: runner.os == 'Linux'
@@ -80,6 +79,17 @@ jobs:
           releaseBody: 'See the assets to download this version and install.'
           releaseDraft: true
           prerelease: false
+          
+      - name: Upload files to the update server test (Windows)
+        if: runner.os == 'Windows'
+        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        with:
+          server: ${{ env.REMOTE_HOST }}
+          protocol: ftps
+          username: ftpuser
+          password: NagatoYuki520
+          local-dir: 'src-tauri/'
+          server-dir: '~/releases/tauri-test/${{ steps.get_version.outputs.app_version }}/win64/'
           
       - name: Upload files to the update server (Windows)
         if: runner.os == 'Windows'
