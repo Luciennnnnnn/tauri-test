@@ -78,7 +78,7 @@ jobs:
           protocol: ftp
           username: ftpuser
           password: NagatoYuki520
-          local-dir: 'src-tauri/'
+          local-dir: 'src-tauri/target/release/bundle/msi'
           server-dir: '~/releases/tauri-test/${{ steps.get_version.outputs.app_version }}/win64/'
           
       - name: Upload files to the update server (Linux)
