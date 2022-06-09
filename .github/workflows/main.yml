@@ -83,14 +83,13 @@ jobs:
           
       - name: Upload files to the update server (Windows)
         if: runner.os == 'Windows'
-        uses: SamKirkland/FTP-Deploy-Action@4.3.0
+        uses: kevinpainchaud/simple-ftp-deploy-action@v1.2.1
         with:
-          server: ${{ env.REMOTE_HOST }}
-          protocol: ftps
-          username: ftpuser
-          password: NagatoYuki520
-          local-dir: 'src-tauri/target/release/bundle/msi/'
-          server-dir: '~/releases/tauri-test/${{ steps.get_version.outputs.app_version }}/win64/'
+          ftp_host: ${{ env.REMOTE_HOST }}
+          ftp_username: ftpuser
+          ftp_password: NagatoYuki520
+          local_source_dir: 'src-tauri/target/release/bundle/msi/'
+          dist_target_dir: '~/releases/tauri-test/${{ steps.get_version.outputs.app_version }}/win64/'
           
       - name: Upload files to the update server (Linux)
         if: runner.os == 'Linux'
