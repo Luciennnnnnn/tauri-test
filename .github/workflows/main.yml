@@ -43,17 +43,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 16
-
-      - name: Upload files to the update server test (Windows)
-        if: runner.os == 'Windows'
-        uses: SamKirkland/FTP-Deploy-Action@4.3.0
-        with:
-          server: ${{ env.REMOTE_HOST }}
-          protocol: ftp
-          username: ftpuser
-          password: NagatoYuki520
-          local-dir: 'src-tauri/'
-          server-dir: '~/releases/tauri-test/'
           
       - name: Rust setup
         uses: actions-rs/toolchain@v1
@@ -86,7 +75,7 @@ jobs:
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:
           server: ${{ env.REMOTE_HOST }}
-          protocol: ftps
+          protocol: ftp
           username: ftpuser
           password: NagatoYuki520
           local-dir: 'src-tauri/'
