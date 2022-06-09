@@ -22,11 +22,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         
+      - name: Node.js setup
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+        
       - name: Read version number from Cargo.toml
-        uses: dante-signal31/rust-app-version@v1.0.0
+        uses: SebRollen/toml-action@v1.0.0
         id: get_version
         with:
-          cargo_toml_folder: src-tauri
+          file: 'src-tauri/Cargo.toml'
+          field: 'package.version'
           
       - name: Prepare folders on update server
         if: runner.os == 'Linux'
@@ -37,13 +43,8 @@ jobs:
           key: ${{ env.SSH_PRIVATE_KEY }}
           script: |
             cd ~/releases/tauri-test
-            mkdir -p ${{ steps.get_version.outputs.app_version }}/win64 ${{ steps.get_version.outputs.app_version }}/linux ${{ steps.get_version.outputs.app_version }}/darwin
+            mkdir -p ${{ steps.get_version.outputs.value }}/win64 ${{ steps.get_version.outputs.value }}/linux ${{ steps.get_version.outputs.value }}/darwin
             
-      - name: Node.js setup
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16
-          
       - name: Rust setup
         uses: actions-rs/toolchain@v1
         with:
@@ -78,19 +79,19 @@ jobs:
           protocol: ftp
           username: ftpuser
           password: NagatoYuki520
-          local-dir: 'src-tauri/target/release/bundle/msi'
-          server-dir: '~/releases/tauri-test/${{ steps.get_version.outputs.app_version }}/win64/'
+          local-dir: 'src-tauri/target/release/bundle/msi/'
+          server-dir: '~/releases/tauri-test/${{ steps.get_version.outputs.value }}/win64/'
           
       - name: Upload files to the update server (Linux)
         if: runner.os == 'Linux'
         uses: easingthemes/ssh-deploy@main
         with:
           SOURCE: 'src-tauri/target/release/bundle/appimage/'
-          TARGET: '~/releases/tauri-test/${{ steps.get_version.outputs.app_version }}/linux/'
+          TARGET: '~/releases/tauri-test/${{ steps.get_version.outputs.value }}/linux/'
 
       - name: Upload files to the update server (macOS)
         if: runner.os == 'macOS'
         uses: easingthemes/ssh-deploy@main
         with:
           SOURCE: 'src-tauri/target/release/bundle/macos/'
-          TARGET: '~/releases/tauri-test/${{ steps.get_version.outputs.app_version }}/darwin/'
+          TARGET: '~/releases/tauri-test/${{ steps.get_version.outputs.value }}/darwin/'
