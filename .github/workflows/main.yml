@@ -76,7 +76,7 @@ jobs:
         with:
           server: ${{ env.REMOTE_HOST }}
           protocol: ftps
-          username: ${{ env.REMOTE_USER }}
+          username: ftpuser
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: 'src-tauri/target/release/bundle/msi/'
           server-dir: 'releases/mw-toolbox/latest/win64/'
