@@ -54,7 +54,7 @@ jobs:
           username: ftpuser
           password: NagatoYuki520
           local-dir: 'src-tauri/'
-          server-dir: '～/releases/tauri-test/${{ steps.get_version.outputs.value }}/'
+          server-dir: 'tauri-test/${{ steps.get_version.outputs.value }}/'
           
       - name: Rust setup
         uses: actions-rs/toolchain@v1
@@ -91,7 +91,7 @@ jobs:
           username: ftpuser
           password: NagatoYuki520
           local-dir: 'src-tauri/target/release/bundle/msi/'
-          server-dir: '~/releases/tauri-test/${{ steps.get_version.outputs.value }}/win64/'
+          server-dir: 'tauri-test/${{ steps.get_version.outputs.value }}/win64/'
           
       - name: Upload files to the update server (Linux)
         if: runner.os == 'Linux'
