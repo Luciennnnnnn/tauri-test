@@ -54,7 +54,7 @@ jobs:
           username: ftpuser
           password: NagatoYuki520
           local-dir: 'src-tauri/'
-          server-dir: '~/releases/tauri-test/${{ steps.get_version.outputs.value }}/'
+          server-dir: '/root/releases/tauri-test/${{ steps.get_version.outputs.value }}/'
           
       - name: Rust setup
         uses: actions-rs/toolchain@v1
