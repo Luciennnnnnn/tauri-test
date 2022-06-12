@@ -44,17 +44,6 @@ jobs:
           script: |
             cd /var/releases
             mkdir -p tauri-test/${{ steps.get_version.outputs.value }}/win64 tauri-test/${{ steps.get_version.outputs.value }}/linux tauri-test/${{ steps.get_version.outputs.value }}/darwin
-            
-      - name: Upload files to the update server test (Windows)
-        if: runner.os == 'Windows'
-        uses: SamKirkland/FTP-Deploy-Action@4.3.0
-        with:
-          server: ${{ env.REMOTE_HOST }}
-          protocol: ftp
-          username: ftpuser
-          password: NagatoYuki520
-          local-dir: 'src-tauri/'
-          server-dir: 'tauri-test/${{ steps.get_version.outputs.value }}/'
           
       - name: Rust setup
         uses: actions-rs/toolchain@v1
@@ -89,7 +78,7 @@ jobs:
           server: ${{ env.REMOTE_HOST }}
           protocol: ftp
           username: ftpuser
-          password: NagatoYuki520
+          password: ${{ secrets.FTP_PASSWORD }}
           local-dir: 'src-tauri/target/release/bundle/msi/'
           server-dir: 'tauri-test/${{ steps.get_version.outputs.value }}/win64/'
           
