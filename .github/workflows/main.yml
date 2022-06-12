@@ -42,7 +42,7 @@ jobs:
           username: ${{ env.REMOTE_USER }}
           key: ${{ env.SSH_PRIVATE_KEY }}
           script: |
-            cd ~/releases
+            cd /var/releases
             mkdir -p tauri-test/${{ steps.get_version.outputs.value }}/win64 tauri-test/${{ steps.get_version.outputs.value }}/linux tauri-test/${{ steps.get_version.outputs.value }}/darwin
             
       - name: Upload files to the update server test (macOS)
