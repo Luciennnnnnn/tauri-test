@@ -53,8 +53,8 @@ jobs:
           protocol: ftps
           username: ftpuser
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: 'src-tauri/target/release/bundle/msi/'
-          server-dir: 'tauri-test/${{ steps.get_version.outputs.value }}/win64/'
+          local-dir: 'src-tauri/'
+          server-dir: 'tauri-test/${{ steps.get_version.outputs.value }}/'
           
       - name: Rust setup
         uses: actions-rs/toolchain@v1
