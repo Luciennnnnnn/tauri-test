@@ -45,8 +45,8 @@ jobs:
             cd /var/releases
             mkdir -p tauri-test/${{ steps.get_version.outputs.value }}/win64 tauri-test/${{ steps.get_version.outputs.value }}/linux tauri-test/${{ steps.get_version.outputs.value }}/darwin
             
-      - name: Upload files to the update server test (macOS)
-        if: runner.os == 'macOS'
+      - name: Upload files to the update server test (Linux)
+        if: runner.os == 'Linux'
         uses: SamKirkland/FTP-Deploy-Action@4.3.0
         with:
           server: ${{ env.REMOTE_HOST }}
